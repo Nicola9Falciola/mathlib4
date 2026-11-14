@@ -192,21 +192,13 @@ theorem updateSubmatrix_map {β : Type*} (f : α → β) :
 theorem updateSubmatrix_reindex (σ : n ≃ k) (τ : m ≃ l) (eₖ : k ↪ o) (eₗ : l ↪ p) :
     updateSubmatrix eₖ eₗ (reindex σ τ A) B =
       updateSubmatrix (σ.toEmbedding.trans eₖ) (τ.toEmbedding.trans eₗ) A B := by
-  refine (eq_updateSubmatrix_iff (σ.toEmbedding.trans eₖ)
-      (τ.toEmbedding.trans eₗ) A B).mpr ⟨by ext; simp, fun _ _ h ↦ ?_⟩
-  rcases h with h | h
-  · exact updateSubmatrix_apply_of_notMem_left _ _ _ _ (by simpa using h)
-  · exact updateSubmatrix_apply_of_notMem_right _ _ _ _ (by simpa using h)
+  rw[ ←updateSubmatrix_equiv_equiv, updateSubmatrix_trans]
 
 theorem reindex_updateSubmatrix (ρ : o ≃ q) (π : p ≃ r) :
     reindex ρ π (updateSubmatrix eₙ eₘ A B) =
       updateSubmatrix (eₙ.trans ρ.toEmbedding) (eₘ.trans π.toEmbedding) A (reindex ρ π B) := by
-  refine (eq_updateSubmatrix_iff (eₙ.trans ρ.toEmbedding) (eₘ.trans π.toEmbedding) A
-    ((reindex ρ π) B)).mpr ⟨by ext; simp, fun _ _ h ↦ ?_⟩
-  simp only [reindex_apply, submatrix_apply]
-  rcases h with h | h
-  · exact updateSubmatrix_apply_of_notMem_left _ _ _ _ fun ⟨a, ha⟩ ↦ h ⟨a, by simp [ha]⟩
-  · exact updateSubmatrix_apply_of_notMem_right _ _ _ _ fun ⟨a, ha⟩ ↦ h ⟨a, by simp [ha]⟩
+  rw [ ←updateSubmatrix_equiv_equiv _ ((reindex ρ π) B), updateSubmatrix_trans]
+  simp
 
 theorem updateSubmatrix_inl_inl (B : Matrix (n ⊕ o) (m ⊕ p) α) :
     updateSubmatrix .inl .inl A B =
